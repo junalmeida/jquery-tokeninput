@@ -22,7 +22,7 @@
         method: "GET",
         contentType: "json",
         queryParam: "q",
-        searchDelay: 300,
+        searchDelay: 1000,
         minChars: 1,
         propertyToSearch: "name",
         jsonContainer: null,
