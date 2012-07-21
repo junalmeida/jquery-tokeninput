@@ -3,6 +3,7 @@
 <head>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
 
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" type="text/css" media="all" />
     <link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
@@ -14,30 +15,50 @@
     <style type="text/css">
 	body
 	{
-		font-family: Verdana, Arial, Helvetica;
-		font-size: 10px;
+	    font-family: Verdana, Arial, Helvetica;
+	    font-size: 10px;
+	    padding: 10px; margin: 0px;
 	}
+	
+	.header
+	{
+	    position: relative;
+	    
+	    float: left;
+	    width: 30em;
+	    
+	}
+	
+	.content
+	{
+	    border-left: solid 1px #B9B9B9;
+	    margin-left: 32em;
+	    padding-left: 20px;
+	    padding-bottom: 300px;
+	}
+
     </style>
 
     <script type="text/javascript">        
     $(document).ready(function() {
-                   $("input[type=button]").click(function () {
-                        alert("Would submit: " + $(this).siblings("div").find("input[type=text]").last().val());
-                    });
-                    
-             
-                    $('#ThemeRoller').themeswitcher();
+	$("input[type=button]").click(function () {
+	     alert("Would submit: " + $(this).siblings("div").find("input[type=text]").last().val());
+	 });
+	 
+  
+	 $('#ThemeRoller').themeswitcher({loadTheme: 'Redmond'});
     });
     </script>
 
 </head>
 <body>
-    <h1>jQuery Tokeninput Demos</h1>
-    <p>Documentation and changelog: <a href="http://junalmeida.wordpress.com/jquery-tokeninput" target="_blank">Plugin Home Page</a><p>
-    <p>Author: Marcos Almeida Junior</p><p>Based on loopj version</p>
-    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
-    <div id="ThemeRoller"></div>
-    <hr />
+    <div class="header">
+	<h1>jQuery Tokeninput Demos</h1>
+	<p>Documentation and changelog: <a href="http://junalmeida.wordpress.com/jquery-tokeninput" target="_blank">Plugin Home Page</a><p>
+	<p>Author: Marcos Almeida Junior</p><p>Based on loopj version</p>
+	<div id="ThemeRoller"></div>
+    </div>
+    <div class="content">
     <h2>Simple Server-Backed Search</h2>
     <div>
         <input type="text" id="demo-input" name="blah" />
@@ -50,7 +71,7 @@
     </div>
 
 
-    <h2>Simple Local Data Search</h2>
+    <h2 id="minChar">Simple Local Data Search, minChars=0</h2>
     <div>
         <input type="text" id="demo-input-local" name="blah" />
         <input type="button" value="Submit" />
@@ -70,7 +91,7 @@
                 {id: 43, name: "C++"},
                 {id: 47, name: "Java"}
             ], {
-            	tokenLimit: 2
+            	minChars: 0
             });
         });
         </script>
@@ -497,6 +518,7 @@
         </script>
     </div>
 --->
-<div style="height: 300px;"></div>
+    </div>
+ 
 </body>
 </html>
