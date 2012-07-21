@@ -20,7 +20,8 @@
     var DEFAULT_SETTINGS = {
         // Search settings
         method: "GET",
-        contentType: "json",
+        responseContentType: "json",
+        requestContentType: "application/x-www-form-urlencoded",
         queryParam: "q",
         searchDelay: 300,
         minChars: 1,
@@ -838,13 +839,13 @@
 
                     ajax_params.data[settings.queryParam] = query;
                     ajax_params.type = settings.method;
-                    ajax_params.dataType = settings.contentType;
+                    ajax_params.dataType = settings.responseContentType;
                     if (settings.crossDomain) {
                         ajax_params.dataType = "jsonp";
                     }
 
-                    ajax_params.contentType = "application/json";
-                    if (JSON && JSON.stringify)
+                    ajax_params.contentType = settings.requestContentType;
+                    if (ajax_params.contentType.indexOf("json") > -1 && JSON && JSON.stringify && typeof ajax_params.data != "string")
                         ajax_params.data = JSON.stringify(ajax_params.data);
 
                     // Attach the success callback
