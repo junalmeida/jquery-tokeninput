@@ -693,7 +693,10 @@
         }
 
         function find_value_and_highlight_term(template, value, term) {
-            return template.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + value + ")(?![^<>]*>)(?![^&;]+;)", "g"), highlight_term(value, term));
+            if (term && term != "")
+                return template.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + value + ")(?![^<>]*>)(?![^&;]+;)", "g"), highlight_term(value, term));
+            else
+                return template;
         }
 
         // Populate the results dropdown with some results
