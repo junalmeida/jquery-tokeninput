@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
+
+
+<script type="text/javascript" src="https://raw.github.com/junalmeida/jquery-tokeninput/master/src/jquery.tokeninput.js"></script>
+<link rel="stylesheet" href="https://raw.github.com/junalmeida/jquery-tokeninput/master/styles/jquery.tokeninput.css" />
+
+
+    <script type="text/javascript">
+        function OnLoad()
+        {
+                   $("input[type=button]").click(function () {
+                        alert("Would submit: " + $(this).siblings("div").find("input[type=text]").last().val());
+                    });
+                    
+             
+                    $('#ThemeRoller').themeswitcher();
+        }
+        
+    $(document).ready(function() {
+ 
+        $.ajax({
+            method: "get",
+            url: "https://raw.github.com/junalmeida/jquery-tokeninput/master/demo.html",
+            crossDomain: true,
+            success: function(data) {
+                    debugger;
+                    var html = $(data);
+                    var body = $("body");
+                    body.html(html.find("body").html());
+                
+                    OnLoad();
+                }
+            });
+    });
+    </script>
+    <style type="text/css">
+	body
+	{
+		font-family: Verdana, Arial, Helvetica;
+		font-size: 10px;
+	}
+    </style>
+</head>
+
+<body>
+    
+</body>
+</html>
