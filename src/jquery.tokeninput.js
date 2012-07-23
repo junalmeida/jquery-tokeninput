@@ -20,7 +20,8 @@
     var DEFAULT_SETTINGS = {
         // Search settings
         method: "GET",
-        contentType: "json",
+        responseContentType: "json",
+        requestContentType: "application/x-www-form-urlencoded",
         queryParam: "q",
         searchDelay: 1000,
         minChars: 1,
@@ -28,9 +29,9 @@
         jsonContainer: null,
 
         // Display settings
-        hintText: "Digite para buscar",
-        noResultsText: "Nenhum resultado",
-        searchingText: "Procurando...",
+        hintText: "Type to search",
+        noResultsText: "Nothing found",
+        searchingText: "Searching...",
         deleteText: "&times;",
         animateDropdown: true,
 
@@ -46,12 +47,9 @@
         prePopulate: null,
         processPrePopulate: false,
 
-        // Manipulation settings
-        idPrefix: "token-input-",
-
         // Formatters
-        resultsFormatter: function (item) { return "<li>" + item[this.propertyToSearch] + "</li>" },
-        tokenFormatter: function (item) { return "<li><span>" + item[this.propertyToSearch] + "</span></li>" },
+        resultsFormatter: function (item) { return "<li><a>" + item[this.propertyToSearch] + "</a></li>" },
+        tokenFormatter: function (item) { return "<li>" + item[this.propertyToSearch] + "</li>" },
 
         // Callbacks
         onResult: null,
@@ -62,19 +60,23 @@
 
     // Default classes to use when theming
     var DEFAULT_CLASSES = {
-        tokenList: "token-input-list",
-        token: "token-input-token",
-        tokenDelete: "token-input-delete-token",
-        selectedToken: "token-input-selected-token",
-        highlightedToken: "token-input-highlighted-token",
-        dropdown: "token-input-dropdown",
-        dropdownItem: "token-input-dropdown-item",
-        dropdownItem2: "token-input-dropdown-item2",
-        selectedDropdownItem: "token-input-selected-dropdown-item",
-        inputToken: "token-input-input-token",
-        hint: "token-input-hint",
-        noResults: "token-input-noResults",
-        searching: "token-input-searching"
+        tokenWidget: "ui-tokeninput ui-widget ui-widget-content ui-corner-all",
+        tokenList: "ui-tokeninput-list",
+        token: "ui-tokeninput-token ui-state-default ui-corner-all",
+        
+        tokenDelete: "ui-tokeninput-delete",
+        selectedToken: "ui-state-active",
+        highlightedToken: "ui-tokeninput-highlighted",
+        dropdown: "ui-menu ui-widget ui-widget-content ui-corner-bottom",
+        dropdownItem: "ui-menu-item",
+        dropdownItem2: "ui-menu-item",
+        dropdownItemLink: "ui-corner-all",
+        selectedDropdownItem: "ui-state-hover",
+        inputTokenItem: "ui-tokeninput-input",
+        inputToken: "ui-state-default",
+        hint: "ui-tokeninput-hint",
+        noResults: "ui-tokeninput-noResults",
+        searching: "ui-tokeninput-searching"
     };
 
     // Input box position "enum"
@@ -194,13 +196,11 @@
         // Keep track of the timeout, old vals
         var timeout;
         var input_val;
+        
 
         // Create a new text input an attach keyup events
-        var input_box = $("<input type=\"text\" autocomplete=\"off\">")
-        .css({
-            outline: "none"
-        })
-        .attr("id", settings.idPrefix + input.id)
+        var input_box = $("<input type=\"text\" autocomplete=\"off\" />")
+        .addClass(settings.classes.inputToken)
         .focus(function () {
             if (!dropdown.is(":visible") && (settings.tokenLimit === null || settings.tokenLimit !== token_count)) {
                 show_dropdown_hint();
@@ -315,6 +315,13 @@
                                input_box.blur();
                            });
 
+                                   //Create a div around
+        hidden_input.wrap("<div></div>");
+        var div_tokeninput = hidden_input.parent("div")
+            .addClass(settings.classes.tokenWidget)
+            .css("position", "relative");
+
+            
         // Keep a reference to the selected token and dropdown item
         var selected_token = null;
         var selected_token_index = 0;
@@ -353,14 +360,14 @@
 
         // The token holding the input box
         var input_token = $("<li />")
-        .addClass(settings.classes.inputToken)
+        .addClass(settings.classes.inputTokenItem)
         .appendTo(token_list)
         .append(input_box);
 
         // The list to store the dropdown items in
         var dropdown = $("<div>")
         .addClass(settings.classes.dropdown)
-        .appendTo("body")
+        .appendTo(div_tokeninput)
         .hide();
 
         dropdown.scroll(function () {
@@ -477,7 +484,7 @@
           .insertBefore(input_token);
 
             // The 'delete token' button
-            $("<span class=\"close\">" + settings.deleteText + "</span>")
+            $("<span>" + settings.deleteText + "</span>")
             .addClass(settings.classes.tokenDelete)
             .appendTo(this_token)
             .click(function () {
@@ -653,19 +660,17 @@
         function hide_dropdown() {
             dropdown.hide().empty();
             selected_dropdown_item = null;
+            div_tokeninput.removeClass("ui-corner-top").addClass("ui-corner-all");
         }
 
         function show_dropdown() {
             dropdown
             .css({
                 position: "absolute",
-                top: $(token_list).offset().top + $(token_list).outerHeight() - 3,
-                left: $(token_list).offset().left,
-                zindex: 999,
-                borderSizing: "border-box",
-                width: $(token_list).outerWidth() - 6
+                top: div_tokeninput.height() - 2 
             })
             .show();
+            div_tokeninput.addClass("ui-corner-top").removeClass("ui-corner-all");
         }
 
         function show_dropdown_searching() {
@@ -688,7 +693,10 @@
         }
 
         function find_value_and_highlight_term(template, value, term) {
-            return template.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + value + ")(?![^<>]*>)(?![^&;]+;)", "g"), highlight_term(value, term));
+            if (term && term != "")
+                return template.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + value + ")(?![^<>]*>)(?![^&;]+;)", "g"), highlight_term(value, term));
+            else
+                return template;
         }
 
         // Populate the results dropdown with some results
@@ -719,6 +727,7 @@
                     } else {
                         this_li.addClass(settings.classes.dropdownItem2);
                     }
+                    this_li.find("a").addClass(settings.classes.dropdownItemLink);
 
                     if (index === 0) {
                         select_dropdown_item(this_li);
@@ -748,15 +757,20 @@
                 if (selected_dropdown_item) {
                     deselect_dropdown_item($(selected_dropdown_item));
                 }
-
-                item.addClass(settings.classes.selectedDropdownItem);
+                if (item.find("a").length > 0)
+                    item.find("a").addClass(settings.classes.selectedDropdownItem);
+                else
+                    item.addClass(settings.classes.selectedDropdownItem);
                 selected_dropdown_item = item.get(0);
             }
         }
 
         // Remove highlighting from an item in the results dropdown
         function deselect_dropdown_item(item) {
-            item.removeClass(settings.classes.selectedDropdownItem);
+            if (item.find("a").length > 0)
+                item.find("a").removeClass(settings.classes.selectedDropdownItem);
+            else
+                item.removeClass(settings.classes.selectedDropdownItem);
             selected_dropdown_item = null;
         }
 
@@ -828,13 +842,13 @@
 
                     ajax_params.data[settings.queryParam] = query;
                     ajax_params.type = settings.method;
-                    ajax_params.dataType = settings.contentType;
+                    ajax_params.dataType = settings.responseContentType;
                     if (settings.crossDomain) {
                         ajax_params.dataType = "jsonp";
                     }
 
-                    ajax_params.contentType = "application/json";
-                    if (JSON && JSON.stringify)
+                    ajax_params.contentType = settings.requestContentType;
+                    if (ajax_params.contentType.indexOf("json") > -1 && JSON && JSON.stringify && typeof ajax_params.data != "string")
                         ajax_params.data = JSON.stringify(ajax_params.data);
 
                     // Attach the success callback
