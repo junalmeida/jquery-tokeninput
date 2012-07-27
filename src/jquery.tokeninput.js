@@ -1,6 +1,6 @@
 /*
 * jQuery Plugin: Tokenizing Autocomplete Text Entry
-* Version 1.6.1
+* Version 2.0
 *
 * Copyright (c) 2012 Marcos Almeida Jr. (http://about.me/junalmeida)
 * Licensed jointly under the GPL and MIT licenses,
@@ -9,10 +9,6 @@
 * Based on original loopj version: 
 * Copyright (c) 2009 James Smith (http://loopj.com)
 *
-* Changelog:
-*  * Supporting minChars: 0
-*  * Extra parameters with function
-*  * Removing p styles
 */
 
 (function ($) {
@@ -63,7 +59,7 @@
         tokenWidget: "ui-tokeninput ui-widget ui-widget-content ui-corner-all",
         tokenList: "ui-tokeninput-list",
         token: "ui-tokeninput-token ui-state-default ui-corner-all",
-        
+
         tokenDelete: "ui-tokeninput-delete",
         selectedToken: "ui-state-active",
         highlightedToken: "ui-tokeninput-highlighted",
@@ -196,7 +192,7 @@
         // Keep track of the timeout, old vals
         var timeout;
         var input_val;
-        
+
 
         // Create a new text input an attach keyup events
         var input_box = $("<input type=\"text\" autocomplete=\"off\" />")
@@ -315,13 +311,13 @@
                                input_box.blur();
                            });
 
-                                   //Create a div around
+        //Create a div around
         hidden_input.wrap("<div></div>");
         var div_tokeninput = hidden_input.parent("div")
             .addClass(settings.classes.tokenWidget)
             .css("position", "relative");
 
-            
+
         // Keep a reference to the selected token and dropdown item
         var selected_token = null;
         var selected_token_index = 0;
@@ -423,7 +419,12 @@
         }
 
         this.add = function (item) {
-            add_token(item);
+            if ($.isArray(item))
+                $(item).each(function (index, item) {
+                    add_token(item);
+                });
+            else
+                add_token(item);
         }
 
         this.remove = function (item) {
@@ -667,7 +668,7 @@
             dropdown
             .css({
                 position: "absolute",
-                top: div_tokeninput.height() - 2 
+                top: div_tokeninput.height() - 2
             })
             .show();
             div_tokeninput.addClass("ui-corner-top").removeClass("ui-corner-all");
